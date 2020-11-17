@@ -13,7 +13,7 @@
 #ifndef PalettesWLED_h
 #define PalettesWLED_h
 
-#define GRADIENT_PALETTE_COUNT 41
+#define GRADIENT_PALETTE_COUNT 42
 
 const byte ib_jul01_gp[] PROGMEM = {
     0, 194,  1,  1,
@@ -606,6 +606,14 @@ const byte Atlantica_gp[] PROGMEM = {
   180,   4,  30, 114, //blue (start 191?)
   255,   4,  30, 114};
   
+  //C9, but brighter and with a less purple blue
+  const byte C9_rnd_gp[] PROGMEM = {
+    0, 255,   5,  0, //red
+   51,   6, 126,  2, //gren
+  102,   4,  30, 114, //blue
+  153, 255, 160,   0, // orange
+  204, 255,   0, 255, // purple
+  255, 255,   0, 255};  
 
 // Single array of defined cpt-city color palettes.
 // This will let us programmatically choose one based on
@@ -652,7 +660,8 @@ const byte* const gGradientPalettes[] PROGMEM = {
   Aurora_gp,                    //50-37 Aurora
   Atlantica_gp,                 //51-38 Atlantica
   C9_2_gp,                      //52-39 C9 2
-  C9_new_gp                     //53-40 C9 New
+  C9_new_gp,                    
+  C9_rnd_gp
 };
 
 #endif

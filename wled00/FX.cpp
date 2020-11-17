@@ -991,6 +991,39 @@ uint16_t WS2812FX::mode_merry_christmas(void) {
 
 
 /*
+ * Alternating red/green pixels running.
+ */
+uint16_t WS2812FX::mode_c9_running(void) {
+  uint8_t pxw = 1 + (SEGMENT.intensity >> 5);
+  uint32_t cycleTime = 35 + (255 - SEGMENT.speed);
+  uint32_t it = now / cycleTime;
+  if (SEGMENT.speed == 0) it = 0;
+
+  for(uint16_t i = 0; i < SEGLEN; i++) {
+    if((i + SEGENV.aux0) % (pxw*5) < pxw) {
+      setPixelColor(SEGLEN -i -1, PURPLE);
+    } else if((i + SEGENV.aux0) % (pxw*5) < pxw*2) {
+      setPixelColor(SEGLEN -i -1, ORANGE);
+    } else if((i + SEGENV.aux0) % (pxw*5) < pxw*3) {
+      setPixelColor(SEGLEN -i -1, BLUE);
+    } else if((i + SEGENV.aux0) % (pxw*5) < pxw*4) {
+      setPixelColor(SEGLEN -i -1, GREEN);
+    } else {
+      setPixelColor(SEGLEN -i -1, RED);
+    }
+  }
+
+  if (it != SEGENV.step)
+  {
+    SEGENV.aux0 = (SEGENV.aux0 +1) % (pxw*5);
+    SEGENV.step = it;
+  }
+  return FRAMETIME;
+}
+
+
+
+/*
  * Alternating orange/purple pixels running.
  */
 uint16_t WS2812FX::mode_halloween(void) {

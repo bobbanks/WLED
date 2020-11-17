@@ -107,7 +107,7 @@
 #define IS_REVERSE      ((SEGMENT.options & REVERSE     ) == REVERSE     )
 #define IS_SELECTED     ((SEGMENT.options & SELECTED    ) == SELECTED    )
 
-#define MODE_COUNT  114
+#define MODE_COUNT  115
 
 #define FX_MODE_STATIC                   0
 #define FX_MODE_BLINK                    1
@@ -223,6 +223,7 @@
 #define FX_MODE_CHUNCHUN               111
 #define FX_MODE_DANCING_SHADOWS        112
 #define FX_MODE_WASHING_MACHINE        113
+#define FX_MODE_C9_RUNNING             114
 
 class WS2812FX {
   typedef uint16_t (WS2812FX::*mode_ptr)(void);
@@ -428,6 +429,7 @@ class WS2812FX {
       _mode[FX_MODE_CHUNCHUN]                = &WS2812FX::mode_chunchun;
       _mode[FX_MODE_DANCING_SHADOWS]         = &WS2812FX::mode_dancing_shadows;
       _mode[FX_MODE_WASHING_MACHINE]         = &WS2812FX::mode_washing_machine;
+      _mode[FX_MODE_C9_RUNNING]              = &WS2812FX::mode_c9_running;
 
       _brightness = DEFAULT_BRIGHTNESS;
       currentPalette = CRGBPalette16(CRGB::Black);
@@ -631,7 +633,8 @@ class WS2812FX {
       mode_flow(void),
       mode_chunchun(void),
       mode_dancing_shadows(void),
-      mode_washing_machine(void);
+      mode_washing_machine(void),
+      mode_c9_running(void);
 
   private:
     NeoPixelWrapper *bus;
@@ -719,7 +722,7 @@ const char JSON_mode_names[] PROGMEM = R"=====([
 "Twinklefox","Twinklecat","Halloween Eyes","Solid Pattern","Solid Pattern Tri","Spots","Spots Fade","Glitter","Candle","Fireworks Starburst",
 "Fireworks 1D","Bouncing Balls","Sinelon","Sinelon Dual","Sinelon Rainbow","Popcorn","Drip","Plasma","Percent","Ripple Rainbow",
 "Heartbeat","Pacifica","Candle Multi", "Solid Glitter","Sunrise","Phased","Twinkleup","Noise Pal", "Sine","Phased Noise",
-"Flow","Chunchun","Dancing Shadows","Washing Machine"
+"Flow","Chunchun","Dancing Shadows","Washing Machine", "C9 Running"
 ])=====";
 
 
@@ -729,7 +732,7 @@ const char JSON_palette_names[] PROGMEM = R"=====([
 "Pastel","Sunset 2","Beech","Vintage","Departure","Landscape","Beach","Sherbet","Hult","Hult 64",
 "Drywet","Jul","Grintage","Rewhi","Tertiary","Fire","Icefire","Cyane","Light Pink","Autumn",
 "Magenta","Magred","Yelmag","Yelblu","Orange & Teal","Tiamat","April Night","Orangery","C9","Sakura",
-"Aurora","Atlantica","C9 2","C9 New"
+"Aurora","Atlantica","C9 2","C9 New", "C9 RND"
 ])=====";
 
 #endif
