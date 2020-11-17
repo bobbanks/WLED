@@ -1059,6 +1059,48 @@ uint16_t WS2812FX::mode_holly(void) {
   return FRAMETIME;
 }
 
+uint16_t WS2812FX::mode_candy_cane(void) {
+  uint8_t pxw = 1 + (SEGMENT.intensity >> 5);
+  uint32_t cycleTime = 35 + (255 - SEGMENT.speed);
+  uint32_t it = now / cycleTime;
+  if (SEGMENT.speed == 0) it = 0;
+
+  for(uint16_t i = 0; i < SEGLEN; i++) {
+    
+    switch ((i + SEGENV.step) % 10) {
+      case 0:
+      case 1:
+      case 2:
+        setPixelColor(SEGLEN-i-1,WHITE);
+        break;
+      case 3:
+      case 4:
+      case 5:
+        setPixelColor(SEGLEN-i-1,RED);
+        break;
+      case 6:
+        setPixelColor(SEGLEN-i-1,WHITE);
+        break;
+      case 7:
+        setPixelColor(SEGLEN-i-1,RED);
+        break;      
+      case 8:
+        setPixelColor(SEGLEN-i-1,WHITE);
+        break;      
+      case 9:
+        setPixelColor(SEGLEN-i-1,RED);
+        break;
+    }
+  }
+
+  if (it != SEGENV.step)
+  {
+    SEGENV.aux0 = (SEGENV.aux0 +1) % (pxw*5);
+    SEGENV.step = it;
+  }
+  return FRAMETIME;
+}
+
 
 /*
  * Alternating orange/purple pixels running.
