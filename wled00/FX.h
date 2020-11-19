@@ -107,7 +107,7 @@
 #define IS_REVERSE      ((SEGMENT.options & REVERSE     ) == REVERSE     )
 #define IS_SELECTED     ((SEGMENT.options & SELECTED    ) == SELECTED    )
 
-#define MODE_COUNT  117
+#define MODE_COUNT  118
 
 #define FX_MODE_STATIC                   0
 #define FX_MODE_BLINK                    1
@@ -226,6 +226,8 @@
 #define FX_MODE_C9_RUNNING             114
 #define FX_MODE_HOLLY                  115
 #define FX_MODE_CANDY_CANE             116
+#define FX_MODE_C9_GLITTER             117
+
 class WS2812FX {
   typedef uint16_t (WS2812FX::*mode_ptr)(void);
 
@@ -433,6 +435,7 @@ class WS2812FX {
       _mode[FX_MODE_C9_RUNNING]              = &WS2812FX::mode_c9_running;
       _mode[FX_MODE_HOLLY]                   = &WS2812FX::mode_holly;
       _mode[FX_MODE_CANDY_CANE]              = &WS2812FX::mode_candy_cane;
+      _mode[FX_MODE_C9_GLITTER]              = &WS2812FX::mode_c9_glitter;
 
       _brightness = DEFAULT_BRIGHTNESS;
       currentPalette = CRGBPalette16(CRGB::Black);
@@ -639,7 +642,8 @@ class WS2812FX {
       mode_washing_machine(void),
       mode_c9_running(void),
       mode_holly(void),
-      mode_candy_cane(void);
+      mode_candy_cane(void),
+      mode_c9_glitter(void);
 
   private:
     NeoPixelWrapper *bus;
@@ -727,7 +731,7 @@ const char JSON_mode_names[] PROGMEM = R"=====([
 "Twinklefox","Twinklecat","Halloween Eyes","Solid Pattern","Solid Pattern Tri","Spots","Spots Fade","Glitter","Candle","Fireworks Starburst",
 "Fireworks 1D","Bouncing Balls","Sinelon","Sinelon Dual","Sinelon Rainbow","Popcorn","Drip","Plasma","Percent","Ripple Rainbow",
 "Heartbeat","Pacifica","Candle Multi", "Solid Glitter","Sunrise","Phased","Twinkleup","Noise Pal", "Sine","Phased Noise",
-"Flow","Chunchun","Dancing Shadows","Washing Machine", "C9 Running", "Holly", "Candy Cane"
+"Flow","Chunchun","Dancing Shadows","Washing Machine", "C9 Running", "Holly", "Candy Cane", "C9 Glitter"
 ])=====";
 
 

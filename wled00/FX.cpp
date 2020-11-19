@@ -1059,6 +1059,37 @@ uint16_t WS2812FX::mode_holly(void) {
   return FRAMETIME;
 }
 
+uint16_t WS2812FX::mode_c9_glitter(void) {
+  for(uint16_t i = 0; i < SEGLEN; i++) {
+    CRGB color;
+    switch (i % 5) {
+      case 0:
+        color = CRGB::Red;
+        break;
+      case 1:
+        color = CRGB::Green;
+        break;
+      case 2:
+        color = CRGB::Blue;
+        break;
+      case 3:
+        color = CRGB::OrangeRed;
+        break;
+      case 4:
+        color = CRGB::Purple;
+        break;
+    }
+    color.r = scale8(color.r, 255 - SEGMENT.intensity);
+    color.g = scale8(color.g, 255 - SEGMENT.intensity);
+    color.b = scale8(color.b, 255 - SEGMENT.intensity);
+    setPixelColor(i, color.r, color.g, color.b);
+  }
+  
+  SEGENV.aux0 = random16(SEGLEN);
+  setPixelColor(random16(SEGLEN), ULTRAWHITE);
+  return FRAMETIME;
+}
+
 uint16_t WS2812FX::mode_candy_cane(void) {
   uint8_t pxw = 1 + (SEGMENT.intensity >> 5);
   uint32_t cycleTime = 35 + (255 - SEGMENT.speed);
