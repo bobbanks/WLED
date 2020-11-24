@@ -1021,6 +1021,77 @@ uint16_t WS2812FX::mode_c9_running(void) {
   return FRAMETIME;
 }
 
+uint16_t WS2812FX::mode_snake(void) {
+  uint16_t snakeHead = SEGENV.aux0;
+  uint16_t snakeLength = SEGENV.aux1;
+  bool bounce = false;
+
+  if (SEGENV.call == 0) {
+    float percentFood = SEGMENT.intensity / 2550.0;
+    uint16_t foodCount = percentFood * SEGLEN;
+    Serial.println(percentFood);
+    Serial.println(foodCount);
+    fill(SEGCOLOR(2));
+    uint16_t foodPixel = 0;
+    for(uint16_t i = 0; i < foodCount; i++) {
+      
+      do {
+        foodPixel = random16(SEGLEN);
+      } while (foodPixel == SEGLEN / 2); 
+      setPixelColor(foodPixel, SEGCOLOR(0));
+    }
+
+    if (random16(1) == 1) {
+      SEGENV.step = 1;
+    } else {
+      SEGENV.step = -1;
+    }
+    snakeHead = SEGLEN / 2;
+
+    setPixelColor(snakeHead, SEGCOLOR(1));
+    snakeLength = 1;
+  } else {
+    snakeHead = snakeHead + SEGENV.step;
+
+    if (getPixelColor(snakeHead) == SEGCOLOR(0)) {
+      snakeLength++;
+      bounce = true;
+    }
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 16580608 - 16711680
+// 0 - 16711680
+// 16580608 - 16711680
+// 0 - 16711680
+// 16580608 - 16711680
+// 16580608 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+// 0 - 16711680
+
+    setPixelColor(snakeHead - SEGENV.step, SEGCOLOR(2));
+    setPixelColor(snakeHead, SEGCOLOR(1));
+    if (snakeHead == SEGLEN || snakeHead == 0 || bounce) {
+      SEGENV.step = (SEGENV.step == -1 ? 1 : -1);
+    }
+  }
+  SEGENV.aux0 = snakeHead;
+  SEGENV.aux1 = snakeLength;
+  return FRAMETIME;
+}
+
 uint16_t WS2812FX::mode_holly(void) {
   uint8_t pxw = 1 + (SEGMENT.intensity >> 5);
   uint32_t cycleTime = 35 + (255 - SEGMENT.speed);
@@ -1061,6 +1132,16 @@ uint16_t WS2812FX::mode_holly(void) {
 
 uint16_t WS2812FX::mode_c9_glitter(void) {
   for(uint16_t i = 0; i < SEGLEN; i++) {
+    uint32_t c = color_from_c9_palette(i, 255 - SEGMENT.intensity);
+    setPixelColor(i, c);
+  }
+  
+  SEGENV.aux0 = random16(SEGLEN);
+  setPixelColor(random16(SEGLEN), ULTRAWHITE);
+  return FRAMETIME;
+}
+
+uint32_t WS2812FX::color_from_c9_palette(uint16_t i, uint8_t pbri) {
     CRGB color;
     switch (i % 5) {
       case 0:
@@ -1079,14 +1160,36 @@ uint16_t WS2812FX::mode_c9_glitter(void) {
         color = CRGB::Purple;
         break;
     }
-    color.r = scale8(color.r, 255 - SEGMENT.intensity);
-    color.g = scale8(color.g, 255 - SEGMENT.intensity);
-    color.b = scale8(color.b, 255 - SEGMENT.intensity);
-    setPixelColor(i, color.r, color.g, color.b);
-  }
+    color.r = scale8(color.r, pbri);
+    color.g = scale8(color.g, pbri);
+    color.b = scale8(color.b, pbri);    
+    return color.r*65536 + color.g*256 + color.b;    
+}
+
+/*
+ * Fire flicker function
+ */
+uint16_t WS2812FX::mode_c9_flicker(void) {
+  uint32_t cycleTime = 40 + (255 - SEGMENT.speed);
+  uint32_t it = now / cycleTime;
+  if (SEGENV.step == it) return FRAMETIME;
   
-  SEGENV.aux0 = random16(SEGLEN);
-  setPixelColor(random16(SEGLEN), ULTRAWHITE);
+  byte w = (SEGCOLOR(0) >> 24) & 0xFF;
+  byte r = (SEGCOLOR(0) >> 16) & 0xFF;
+  byte g = (SEGCOLOR(0) >>  8) & 0xFF;
+  byte b = (SEGCOLOR(0)        & 0xFF);
+  byte lum = (SEGMENT.palette == 0) ? MAX(w, MAX(r, MAX(g, b))) : 255;
+  lum /= (((256-SEGMENT.intensity)/16)+1);
+  for(uint16_t i = 0; i < SEGLEN; i++) {
+    byte flicker = random8(lum);
+    if (SEGMENT.palette == 0) {
+      setPixelColor(i, MAX(r - flicker, 0), MAX(g - flicker, 0), MAX(b - flicker, 0), MAX(w - flicker, 0));
+    } else {
+      setPixelColor(i, color_from_c9_palette(i, 255 - flicker));
+    }
+  }
+
+  SEGENV.step = it;
   return FRAMETIME;
 }
 

@@ -609,11 +609,11 @@ const byte Atlantica_gp[] PROGMEM = {
   //C9, but brighter and with a less purple blue
   const byte C9_rnd_gp[] PROGMEM = {
     0, 255,   5,  0, //red
-   51,   6, 126,  2, //gren
-  102,   4,  30, 114, //blue
-  153, 255, 160,   0, // orange
-  204, 255,   0, 255, // purple
-  255, 255,   0, 255};  
+    1,   6, 126,  2, //gren
+    2,   4,  30, 114, //blue
+    3, 255, 160,   0, // orange
+    4, 255,   0, 255, // purple
+    };  
 
 // Single array of defined cpt-city color palettes.
 // This will let us programmatically choose one based on
